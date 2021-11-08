@@ -4,8 +4,9 @@ This Repository contains the Web Evaluation Suite used to retrieve analytics fro
 <hr>
 
 ## PROJECT OVERVIEW :
+
 ## REQUIREMENTS :
-Functional/Non-Functional
+
 ## SYSTEM DIAGRAM :
 
 ## E-R MODEL :
