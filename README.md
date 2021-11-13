@@ -29,13 +29,21 @@ TABLES:
     1. id - auto generated
     2. eventid - FK
     3. url id:
-
-## End Users :
+## Main Structure :
+* Main user creation/Admin login page: `GET`
+    * User create :`POST`   -> redirect to main page
+    * Login Admin : `POST`  -> redirect to admin dashboard
+* Admin Dashboard : `GET`
+    * Events create submenu : `GET`
+    * Events calendar submenu : `GET`
+    * Events modify submenu
+    * Events delete submenu
+    * Send email submenu(generate otp)
 
 
 ## Rest Endpoints for now:
 
-1. `/accounts/` : Account main page login,create,admin login
+1. `/accounts/` : `GET` request -> fetch admin 
 2. `/accounts/login` : login user {not required}
 3. `/accounts/create`: create user
 4. `/accounts/admin` : login admin and redirect to dashboard
