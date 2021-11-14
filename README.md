@@ -11,9 +11,15 @@ This Repository contains the Web Evaluation Suite used to retrieve analytics fro
 
 ## E-R MODEL/CLASSES (DJANGO ORM) :
 TABLES:
-
-* Users and SuperUser(admin) default present
-    1. email - will be needed for email sending
+* Admin
+    1. username - PK
+    5. password - String
+* Users
+    1. username - PK
+    2. email - will be needed for email sending
+    3. firstname - String
+    4. lastname - String
+    5. password - String
 * Event:
     1. id - PRIMARY KEY(Auto generated)
     2. name - String
@@ -24,22 +30,22 @@ TABLES:
     7. token - default null (generate through email)
 * URL :
     1. id - PK
-    2. url 
+    2. url
 * Eval :
     1. id - auto generated
     2. eventid - FK
     3. url id:
-## Main Structure :
+## Main Structure (Pages):
 * Main user creation/Admin login page: `GET`
     * User create :`POST`   -> redirect to main page
     * Login Admin : `POST`  -> redirect to admin dashboard
 * Admin Dashboard : `GET`
-    * Events create submenu : `GET`
+    * Events create submenu : `POST`
     * Events calendar submenu : `GET`
-    * Events modify submenu
-    * Events delete submenu
-    * Send email submenu(generate otp)
-
+    * Events modify submenu : `PUT`
+    * Events delete submenu : `DELETE`
+    * Send email submenu(generate otp): `POST`
+## Structure (Extension):
 
 ## Rest Endpoints for now:
 
@@ -56,6 +62,8 @@ TABLES:
 11. `/eval/login` : authenticate otp token [Extension]
 12. `/eval/entry` : Entry into db of mouseclick/heatmap [Extension]
 13. `/eval/tests` : Select tests and view results [Extension]
-
+## Javascript tasks :
+1. Reading the mouse click location and sending it to `/eval/entry`
+2. Fetching the mouse click data from db and display it in heatmap `/eval/tests`
 
 Modify as per convinience
