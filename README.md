@@ -66,4 +66,6 @@ TABLES:
 1. Reading the mouse click location and sending it to `/eval/entry`
 2. Fetching the mouse click data from db and display it in heatmap `/eval/tests`
 
+Whiteboard link : 
+https://wbd.ms/share/v2/aHR0cHM6Ly93aGl0ZWJvYXJkLm1pY3Jvc29mdC5jb20vYXBpL3YxLjAvd2hpdGVib2FyZHMvcmVkZWVtLzcyNzVmYWJiMjU0MjQwMjY5OTNiZjJkM2VlZGI2ZTRhXzAzMWEzYmJjLWNmN2MtNGUyYi05NmVjLTg2NzU1NTU0MGExY19iYTcxY2IwMy01MmJkLTQyYjctODU1MS1hMTc3N2ExYjlmMjA=
 Modify as per convinience
