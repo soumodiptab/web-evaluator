@@ -12,6 +12,14 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+class Event(db.Model):
+    __tablename__ = 'event'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    date = db.Column(db.String(80), nullable=False)
+    starttime = db.Column(db.TIMESTAMP,nullable=False)
+    endtime =
+
 
 class Admin(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
