@@ -1,36 +1,224 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
-</head>
-<body>
-<div id="calendar">
-    <script>
-        let calendarElement = document.getElementById('calendar');
-        let calendar = new FullCalendar.Calendar
-        (calendarElement,{
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            events : [
-            {% for event in events %}
-                {
-                  title: '{{ event.title }}',
-                  start: '{{ event.start }}',
-                  end:'{{ event.end }}',
-                    backgroundColor:'{{ event.backgroundColor }}'
-                },
-            {% endfor %}
-        ]
-        });
-        calendar.render();
-    </script>
-</div>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+    <div class="modal fade" id="removeEventModal" tabindex="-1" aria-labelledby="removeEventModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <input id="removeEventId" type="hidden"/>
+                    <h5 class="modal-title" id="removeEventModalTitle">EVENT TITLE</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to remove this event ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <button type="button" class="btn btn-primary" id="removeEventConfirmed">YES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Create new event</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-4" for="title">Event title</label>
+                            <input type="text" name="title" id="eventTitle"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-4" for="startsat">Starts at</label>
+                            <input type="text" name="startsat" id="startsat"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-4" for="endsat">Ends at</label>
+                            <input type="text" name="endsat" id="endsat"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveEvent">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="container">
+        <div class="container">
+            <div class="form-group">
+                <div class="input-group date" id="datetimepicker1">
+                    <input type="text" class="form-control">
+                    <div class="input-group-addon input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EventModal">
+            Launch static backdrop modal
+        </button>
+        <hr>
+        <div id="calendar">
+            <script>
+                $(function () {
+                    $.extend(true, $.fn.datetimepicker.defaults, {
+                        icons: {
+                            time: 'far fa-clock',
+                            date: 'far fa-calendar',
+                            up: 'fas fa-arrow-up',
+                            down: 'fas fa-arrow-down',
+                            previous: 'fas fa-chevron-left',
+                            next: 'fas fa-chevron-right',
+                            today: 'far fa-calendar-check-o',
+                            clear: 'far fa-trash',
+                            close: 'far fa-times'
+                        },
+                        format: 'DD/MM/YY HH:mm:ss'
+                    });
+                });
+                var test;
+                var calendar = $('#calendar').fullCalendar
+                ({
+                    themeSystem: 'bootstrap',
+                    editable: true,
+                    displayEventTime: true,
+                    defaultView: 'month',
+                    contentHeight: 'auto',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    events: [
+                        {% for event in events %}
+                            {
+                                id: '{{ event.id }}',
+                                title: '{{ event.title }}',
+                                start: '{{ event.start }}',
+                                end: '{{ event.end }}'
+                            },
+                        {% endfor %}
+                    ],
+                    eventRender: function (event, element, view) {
+                        if (event.allDay === 'true') {
+                            event.allDay = true;
+                        } else {
+                            event.allDay = false;
+                        }
+                    },
+                    selectable: true,
+                    selectHelper: true,
+                    eventClick: function (event) {
+                        $('#removeEventModalTitle').html(event.title);
+                        $('#removeEventId').val(event.id);
+                        $('#removeEventModal').modal('show');
+                    },
+                    eventDrop: function (event, delta) {
+                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm:ss");
+                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm:ss");
+
+                        $.ajax({
+                            url: '/observer/event/update',
+                            type: "POST",
+                            data: {
+                                id: event.id,
+                                title: event.title,
+                                start: event_start,
+                                end: event_end,
+                            },
+                            success: function (response) {
+                                displayMessage("Event updated");
+                            }
+                        });
+                    },
+                    eventResize: function (event, delta) {
+                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm:ss");
+                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm:ss");
+
+                        $.ajax({
+                            url: '/observer/event/update',
+                            type: "POST",
+                            data: {
+                                id: event.id,
+                                title: event.title,
+                                start: event_start,
+                                end: event_end,
+                            },
+                            success: function (response) {
+                                displayMessage("Event updated");
+                            }
+                        });
+                    },
+                    select: function (start, end, allDay) {
+                        var start = $.fullCalendar.formatDate(start, "DD/MM/YY HH:mm:ss");
+                        var end = $.fullCalendar.formatDate(end, "DD/MM/YY HH:mm:ss");
+                        $("#startsat").val(start);
+                        $('#endsat').val(end);
+                        $('#eventModal').modal('show');
+                    }
+                });
+                $(function () {
+                    $('#datetimepicker1').datetimepicker();
+                    $("#endsat").datetimepicker();
+                    $('#startsat').datetimepicker();
+                });
+
+                function displayMessage(message) {
+                    toastr.success(message, 'Event');
+                }
+
+                $('#saveEvent').click(function (events) {
+                    $('#eventModal').modal('hide');
+                    var start =  $("#startsat").val();
+                    var end = $('#endsat').val();
+                    var title = $('#eventTitle').val();
+                    $.ajax({
+                        url: "/observer/event/entry",
+                        type: "POST",
+                        data: {title: title, start: start, end: end},
+                        success: function (data) {
+
+                            $('#calendar').fullCalendar('renderEvent',{
+                                id: data.id,
+                                title: data.title,
+                                start: data.start,
+                                end: data.end,
+                            });
+                           displayMessage("New even added Successfully");
+                        }
+                    })
+
+                });
+                $('#removeEventConfirmed').click(function (events) {
+                    $('#removeEventModal').modal('hide');
+                    var eventId = $('#removeEventId').val();
+                    $.ajax({
+                        type: "POST",
+                        url: '/observer/event/remove',
+                        data: {
+                            id: eventId
+                        },
+                        success: function (data) {
+                            test = data.id;
+                            $('#calendar').fullCalendar('removeEvents', data.id);
+                            displayMessage("Event removed");
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </div>
+{% endblock content %}
