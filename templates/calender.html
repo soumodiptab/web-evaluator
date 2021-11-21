@@ -24,7 +24,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Create new event</h4>
+                    <h4 class="modal-title">Create new Test</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -46,6 +46,18 @@
                             <input type="text" name="endsat" id="endsat"/>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-4" for="url">Url</label>
+                            <input type="text" name="url" id="url"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-4" for="user">User</label>
+                            <select id="user" name="user"></select>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
@@ -57,19 +69,6 @@
 
 
     <div class="container">
-        <div class="container">
-            <div class="form-group">
-                <div class="input-group date" id="datetimepicker1">
-                    <input type="text" class="form-control">
-                    <div class="input-group-addon input-group-prepend">
-                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EventModal">
-            Launch static backdrop modal
-        </button>
         <hr>
         <div id="calendar">
             <script>
@@ -86,7 +85,8 @@
                             clear: 'far fa-trash',
                             close: 'far fa-times'
                         },
-                        format: 'DD/MM/YY HH:mm:ss'
+                        minDate: new moment(),
+                        format: 'DD/MM/YY HH:mm'
                     });
                 });
                 var test;
@@ -121,14 +121,18 @@
                     },
                     selectable: true,
                     selectHelper: true,
+                    eventConstraint: {
+                        start: moment().format('YYYY-MM-DD'),
+                        end: '2100-01-01' // hard coded goodness unfortunately
+                    },
                     eventClick: function (event) {
                         $('#removeEventModalTitle').html(event.title);
                         $('#removeEventId').val(event.id);
                         $('#removeEventModal').modal('show');
                     },
                     eventDrop: function (event, delta) {
-                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm:ss");
-                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm:ss");
+                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm");
+                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm");
 
                         $.ajax({
                             url: '/observer/event/update',
@@ -145,8 +149,8 @@
                         });
                     },
                     eventResize: function (event, delta) {
-                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm:ss");
-                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm:ss");
+                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm");
+                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm");
 
                         $.ajax({
                             url: '/observer/event/update',
@@ -163,11 +167,33 @@
                         });
                     },
                     select: function (start, end, allDay) {
-                        var start = $.fullCalendar.formatDate(start, "DD/MM/YY HH:mm:ss");
-                        var end = $.fullCalendar.formatDate(end, "DD/MM/YY HH:mm:ss");
-                        $("#startsat").val(start);
-                        $('#endsat').val(end);
-                        $('#eventModal').modal('show');
+                        var checkstart = moment(start).format('YY/MM/DD HH:mm')
+                        var start = moment(start).format("DD/MM/YY HH:mm");
+                        var end = moment(end).format("DD/MM/YY HH:mm");
+                        var check = moment().format("YY/MM/DD HH:mm");
+                        if (checkstart < check) {
+                            console.log(start)
+                            console.log(check)
+                            toastr.info('Cannot select this date')
+                        } else {
+                            $("#startsat").val(start);
+                            $('#endsat').val(end);
+                            var user_select = document.getElementById("user");
+                            fetch('/observer/users/query').then(function (response) {
+                                console.log(response)
+                                response.json().then(function (data) {
+                                    var optionHTML = '';
+
+                                    for (var user of data.users) {
+                                        optionHTML += '<option value="' + user.id + '">' + user.username + '</option>';
+                                    }
+                                    console.log(optionHTML)
+                                    user_select.innerHTML = optionHTML;
+                                })
+
+                            });
+                            $('#eventModal').modal('show');
+                        }
                     }
                 });
                 $(function () {
@@ -180,9 +206,13 @@
                     toastr.success(message, 'Event');
                 }
 
+                function displayInfo(message) {
+                    toastr.info(message);
+                }
+
                 $('#saveEvent').click(function (events) {
                     $('#eventModal').modal('hide');
-                    var start =  $("#startsat").val();
+                    var start = $("#startsat").val();
                     var end = $('#endsat').val();
                     var title = $('#eventTitle').val();
                     $.ajax({
@@ -191,13 +221,13 @@
                         data: {title: title, start: start, end: end},
                         success: function (data) {
 
-                            $('#calendar').fullCalendar('renderEvent',{
+                            $('#calendar').fullCalendar('renderEvent', {
                                 id: data.id,
                                 title: data.title,
                                 start: data.start,
                                 end: data.end,
                             });
-                           displayMessage("New even added Successfully");
+                            displayMessage("New even added Successfully");
                         }
                     })
 
