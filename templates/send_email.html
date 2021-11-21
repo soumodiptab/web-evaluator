@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <form>
+        <label for="events_list">Select an event :</label>
+        <select name="events_list" id="events_list">
+            {% for event in events %}
+                <option value="{{ event['test_id'] }}"> {{ event['test_name'] }} </option>
+            {% endfor %}
+        </select> 
+        <button onClick="sendEmailXhttp()">Send email</button>
+    </form>
+{% endblock %} 

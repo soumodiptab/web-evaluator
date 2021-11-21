@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Test name</th>
+                <th>Date</th>
+                <th>Mouse clicks</th>
+                <th>Heat map</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        {% for event in events %}
+        <tr>
+            <td>{{ event['test_name'] }}</td>
+            <td>{{ event['date'] }}</td>
+            <td>{{ event['mouse_clicks'] }}</td>
+            <td>{{ event['heat_map'] }}</td>
+            <td><a href="{{ event['event_url'] }}">link</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
