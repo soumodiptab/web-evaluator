@@ -14,14 +14,17 @@ This Repository contains the Web Evaluation Suite used to retrieve analytics fro
 ### E-R MODEL/CLASSES (SQLALCHEMY ORM) :
 TABLES:
 * Admin
-    1. username - PK
-    5. password - String
+    1. id - PK 
+    2. username - String(unique)
+    3. password - String
 * Users
-    1. username - PK
-    2. email - will be needed for email sending
-    3. firstname - String
-    4. lastname - String
-    5. password - String
+    1. id - PK
+    2. username - String(unique)
+    3. email - will be needed for email sending
+    4. firstname - String
+    5. lastname - String
+    6. password - String
+    7. isadmin - Boolean
 * Event:
     1. id - PRIMARY KEY(Auto generated)
     2. name - String
