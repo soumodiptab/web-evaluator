@@ -65,7 +65,7 @@ class RegisterForm(FlaskForm):
                             InputRequired(), Length(min=4, max=15)])
     lastname = StringField('Last Name', validators=[
                            InputRequired(), Length(min=4, max=15)])
-    admin = BooleanField('Tick if you are admin')
+    # admin = BooleanField('Tick if you are admin')
 
 @app.route('/')
 def index():
@@ -100,9 +100,12 @@ def signup():
     if form.validate_on_submit():
         hashed_password = generate_password_hash(form.password.data, method='sha256')
         print(hashed_password)
-        new_user = User(username=form.username.data, email=form.email.data, 
-                        firstname=form.firstname.data, lastname=form.lastname.data, 
-                        password=hashed_password, isadmin=form.admin.data)
+        # new_user = User(username=form.username.data, email=form.email.data, 
+        #                 firstname=form.firstname.data, lastname=form.lastname.data, 
+        #                 password=hashed_password, isadmin=form.admin.data)
+        new_user = User(username=form.username.data, email=form.email.data,
+                        firstname=form.firstname.data, lastname=form.lastname.data,
+                        password=hashed_password, isadmin=False)
         db.session.add(new_user)
         db.session.commit()
 
