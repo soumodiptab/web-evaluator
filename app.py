@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import json
 from sqlalchemy import DateTime
 from flask import Flask, request, render_template
