@@ -3,6 +3,7 @@ from sqlalchemy import DateTime
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from util.send_gmail_utiltity import sendEmail
+from flask_login import LoginManager, login_user, current_user, logout_user, login_required, UserMixin
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user.db'
