@@ -3,7 +3,7 @@
     <div class="modal fade" id="removeEventModal" tabindex="-1" aria-labelledby="removeEventModalLabel"
          aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content ">
                 <div class="modal-header">
                     <input id="removeEventId" type="hidden"/>
                     <h5 class="modal-title" id="removeEventModalTitle">EVENT TITLE</h5>
@@ -29,31 +29,31 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
-                            <label class="col-md-4" for="title">Event title</label>
+                        <div class="col-md-12 p-3">
+                            <label class="col-md-4" for="title">Test title</label>
                             <input type="text" name="title" id="eventTitle"/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 p-3">
                             <label class="col-md-4" for="startsat">Starts at</label>
                             <input type="text" name="startsat" id="startsat"/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 p-3">
                             <label class="col-md-4" for="endsat">Ends at</label>
                             <input type="text" name="endsat" id="endsat"/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 p-3">
                             <label class="col-md-4" for="url">Url</label>
                             <input type="text" name="url" id="url"/>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 p-3">
                             <label class="col-md-4" for="user">User</label>
                             <select id="user" name="user"></select>
                         </div>
@@ -106,18 +106,16 @@
                         {% for event in events %}
                             {
                                 id: '{{ event.id }}',
-                                title: '{{ event.title }}',
+                                title: '{{ event.title }}' + ' User: ' + '{{ event.username }}',
+                                username: '{{ event.username }}',
+                                evalurl: '{{ event.url }}',
                                 start: '{{ event.start }}',
-                                end: '{{ event.end }}'
+                                end: '{{ event.end }}',
+                                status: '{{ event.status }}'
                             },
                         {% endfor %}
                     ],
-                    eventRender: function (event, element, view) {
-                        if (event.allDay === 'true') {
-                            event.allDay = true;
-                        } else {
-                            event.allDay = false;
-                        }
+                    eventRender: function (eventObj, $el) {
                     },
                     selectable: true,
                     selectHelper: true,
@@ -130,41 +128,48 @@
                         $('#removeEventId').val(event.id);
                         $('#removeEventModal').modal('show');
                     },
-                    eventDrop: function (event, delta) {
+                    eventDrop: function (event, delta, revertFunc) {
                         var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm");
                         var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm");
-
-                        $.ajax({
-                            url: '/observer/event/update',
-                            type: "POST",
-                            data: {
-                                id: event.id,
-                                title: event.title,
-                                start: event_start,
-                                end: event_end,
-                            },
-                            success: function (response) {
-                                displayMessage("Event updated");
-                            }
-                        });
+                        if (event.status === 'COMPLETED') {
+                            toastr.error('Event is already completed');
+                            revertFunc();
+                        } else {
+                            $.ajax({
+                                url: '/observer/event/update',
+                                type: "POST",
+                                data: {
+                                    id: event.id,
+                                    start: event_start,
+                                    end: event_end,
+                                },
+                                success: function (response) {
+                                    displayMessage("Event updated");
+                                }
+                            });
+                        }
                     },
-                    eventResize: function (event, delta) {
+                    eventResize: function (event, delta, revertFunc) {
                         var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm");
                         var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm");
-
-                        $.ajax({
-                            url: '/observer/event/update',
-                            type: "POST",
-                            data: {
-                                id: event.id,
-                                title: event.title,
-                                start: event_start,
-                                end: event_end,
-                            },
-                            success: function (response) {
-                                displayMessage("Event updated");
-                            }
-                        });
+                        if (event.status === 'COMPLETED') {
+                            toastr.error('Event is already completed');
+                            revertFunc();
+                        } else {
+                            $.ajax({
+                                url: '/observer/event/update',
+                                type: "POST",
+                                data: {
+                                    id: event.id,
+                                    title: event.title,
+                                    start: event_start,
+                                    end: event_end,
+                                },
+                                success: function (response) {
+                                    displayMessage("Event updated");
+                                }
+                            });
+                        }
                     },
                     select: function (start, end, allDay) {
                         var checkstart = moment(start).format('YY/MM/DD HH:mm')
@@ -215,19 +220,22 @@
                     var start = $("#startsat").val();
                     var end = $('#endsat').val();
                     var title = $('#eventTitle').val();
+                    var userid = $('#user').val();
                     $.ajax({
                         url: "/observer/event/entry",
                         type: "POST",
-                        data: {title: title, start: start, end: end},
+                        data: {title: title, start: start, end: end, userid: userid},
                         success: function (data) {
 
                             $('#calendar').fullCalendar('renderEvent', {
                                 id: data.id,
-                                title: data.title,
+                                title: data.title + ' User: ' + data.username,
+                                evalurl: data.url,
                                 start: data.start,
                                 end: data.end,
+                                status: data.status
                             });
-                            displayMessage("New even added Successfully");
+                            displayMessage("New Test added Successfully");
                         }
                     })
 
@@ -244,7 +252,7 @@
                         success: function (data) {
                             test = data.id;
                             $('#calendar').fullCalendar('removeEvents', data.id);
-                            displayMessage("Event removed");
+                            displayMessage("Test removed");
                         }
                     });
                 });
