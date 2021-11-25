@@ -1,0 +1,262 @@
+{% extends "dashboard_admin.html" %}
+{% block admincontent %}
+    <div class="modal fade" id="removeEventModal" tabindex="-1" aria-labelledby="removeEventModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content ">
+                <div class="modal-header">
+                    <input id="removeEventId" type="hidden"/>
+                    <h5 class="modal-title" id="removeEventModalTitle">EVENT TITLE</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to remove this event ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+                    <button type="button" class="btn btn-primary" id="removeEventConfirmed">YES</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Create new Test</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 p-3">
+                            <label class="col-md-4" for="title">Test title</label>
+                            <input type="text" name="title" id="eventTitle"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 p-3">
+                            <label class="col-md-4" for="startsat">Starts at</label>
+                            <input type="text" name="startsat" id="startsat"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 p-3">
+                            <label class="col-md-4" for="endsat">Ends at</label>
+                            <input type="text" name="endsat" id="endsat"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 p-3">
+                            <label class="col-md-4" for="url">Url</label>
+                            <input type="text" name="url" id="url"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 p-3">
+                            <label class="col-md-4" for="user">User</label>
+                            <select id="user" name="user"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveEvent">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+
+    <div class="container">
+        <hr>
+        <div id="calendar">
+            <script>
+                $(function () {
+                    $.extend(true, $.fn.datetimepicker.defaults, {
+                        icons: {
+                            time: 'far fa-clock',
+                            date: 'far fa-calendar',
+                            up: 'fas fa-arrow-up',
+                            down: 'fas fa-arrow-down',
+                            previous: 'fas fa-chevron-left',
+                            next: 'fas fa-chevron-right',
+                            today: 'far fa-calendar-check-o',
+                            clear: 'far fa-trash',
+                            close: 'far fa-times'
+                        },
+                        minDate: new moment(),
+                        format: 'DD/MM/YY HH:mm'
+                    });
+                });
+                var test;
+                var calendar = $('#calendar').fullCalendar
+                ({
+                    themeSystem: 'bootstrap',
+                    editable: true,
+                    displayEventTime: true,
+                    defaultView: 'month',
+                    contentHeight: 'auto',
+                    header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                    },
+                    events: [
+                        {% for event in events %}
+                            {
+                                id: '{{ event.id }}',
+                                title: '{{ event.title }}' + ' User: ' + '{{ event.username }}',
+                                username: '{{ event.username }}',
+                                evalurl: '{{ event.url }}',
+                                start: '{{ event.start }}',
+                                end: '{{ event.end }}',
+                                status: '{{ event.status }}'
+                            },
+                        {% endfor %}
+                    ],
+                    eventRender: function (eventObj, $el) {
+                    },
+                    selectable: true,
+                    selectHelper: true,
+                    eventConstraint: {
+                        start: moment().format('YYYY-MM-DD'),
+                        end: '2100-01-01' // hard coded goodness unfortunately
+                    },
+                    eventClick: function (event) {
+                        $('#removeEventModalTitle').html(event.title);
+                        $('#removeEventId').val(event.id);
+                        $('#removeEventModal').modal('show');
+                    },
+                    eventDrop: function (event, delta, revertFunc) {
+                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm");
+                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm");
+                        if (event.status === 'COMPLETED') {
+                            toastr.error('Event is already completed');
+                            revertFunc();
+                        } else {
+                            $.ajax({
+                                url: '/observer/event/update',
+                                type: "POST",
+                                data: {
+                                    id: event.id,
+                                    start: event_start,
+                                    end: event_end,
+                                },
+                                success: function (response) {
+                                    displayMessage("Event updated");
+                                }
+                            });
+                        }
+                    },
+                    eventResize: function (event, delta, revertFunc) {
+                        var event_start = $.fullCalendar.formatDate(event.start, "DD/MM/YY HH:mm");
+                        var event_end = $.fullCalendar.formatDate(event.end, "DD/MM/YY HH:mm");
+                        if (event.status === 'COMPLETED') {
+                            toastr.error('Event is already completed');
+                            revertFunc();
+                        } else {
+                            $.ajax({
+                                url: '/observer/event/update',
+                                type: "POST",
+                                data: {
+                                    id: event.id,
+                                    title: event.title,
+                                    start: event_start,
+                                    end: event_end,
+                                },
+                                success: function (response) {
+                                    displayMessage("Event updated");
+                                }
+                            });
+                        }
+                    },
+                    select: function (start, end, allDay) {
+                        var checkstart = moment(start).format('YY/MM/DD HH:mm')
+                        var start = moment(start).format("DD/MM/YY HH:mm");
+                        var end = moment(end).format("DD/MM/YY HH:mm");
+                        var check = moment().format("YY/MM/DD HH:mm");
+                        if (checkstart < check) {
+                            console.log(start)
+                            console.log(check)
+                            toastr.info('Cannot select this date')
+                        } else {
+                            $("#startsat").val(start);
+                            $('#endsat').val(end);
+                            var user_select = document.getElementById("user");
+                            fetch('/observer/users/query').then(function (response) {
+                                console.log(response)
+                                response.json().then(function (data) {
+                                    var optionHTML = '';
+
+                                    for (var user of data.users) {
+                                        optionHTML += '<option value="' + user.id + '">' + user.username + '</option>';
+                                    }
+                                    console.log(optionHTML)
+                                    user_select.innerHTML = optionHTML;
+                                })
+
+                            });
+                            $('#eventModal').modal('show');
+                        }
+                    }
+                });
+                $(function () {
+                    $('#datetimepicker1').datetimepicker();
+                    $("#endsat").datetimepicker();
+                    $('#startsat').datetimepicker();
+                });
+
+                function displayMessage(message) {
+                    toastr.success(message, 'Event');
+                }
+
+                function displayInfo(message) {
+                    toastr.info(message);
+                }
+
+                $('#saveEvent').click(function (events) {
+                    $('#eventModal').modal('hide');
+                    var start = $("#startsat").val();
+                    var end = $('#endsat').val();
+                    var title = $('#eventTitle').val();
+                    var userid = $('#user').val();
+                    $.ajax({
+                        url: "/observer/event/entry",
+                        type: "POST",
+                        data: {title: title, start: start, end: end, userid: userid},
+                        success: function (data) {
+
+                            $('#calendar').fullCalendar('renderEvent', {
+                                id: data.id,
+                                title: data.title + ' User: ' + data.username,
+                                evalurl: data.url,
+                                start: data.start,
+                                end: data.end,
+                                status: data.status
+                            });
+                            displayMessage("New Test added Successfully");
+                        }
+                    })
+
+                });
+                $('#removeEventConfirmed').click(function (events) {
+                    $('#removeEventModal').modal('hide');
+                    var eventId = $('#removeEventId').val();
+                    $.ajax({
+                        type: "POST",
+                        url: '/observer/event/remove',
+                        data: {
+                            id: eventId
+                        },
+                        success: function (data) {
+                            test = data.id;
+                            $('#calendar').fullCalendar('removeEvents', data.id);
+                            displayMessage("Test removed");
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </div>
+{% endblock admincontent %}

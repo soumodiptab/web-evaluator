@@ -28,11 +28,10 @@ TABLES:
 * Event:
     1. id - PRIMARY KEY(Auto generated)
     2. name - String
-    3. date - date
-    4. starttime - time
-    5. endtime - time
-    6. status - completed - true not completed - false
-    7. token - default null (generate through email)
+    3. start - time
+    4. end - time
+    5. status - COMPLETED - true NOTCOMPLETED - false
+    6. token - default null (generate through email)[Not sure about this]
 * URL :
     1. id - PK
     2. url
