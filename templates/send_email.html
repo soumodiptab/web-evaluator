@@ -1,0 +1,12 @@
+{% extends "dashboard_admin.html" %}
+{% block admincontent %}
+<div class="container">
+        <label for="events_list">Select an event :</label>
+        <select name="events_list" id="events_list">
+            {% for event in events %}
+                <option value="{{ event['id'] }}"> {{ event['test_name'] }} </option>
+            {% endfor %}
+        </select> 
+        <button onClick="sendEmailXhttp()">Send email</button>
+</div>
+{% endblock admincontent %}
