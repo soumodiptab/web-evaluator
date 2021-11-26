@@ -9,7 +9,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from datetime import datetime
 import json
 import pymysql
-from util import send_gmail_utiltity
+from util.send_gmail_utiltity import *
 
 pymysql.install_as_MySQLdb()
 
@@ -210,8 +210,8 @@ def sendEventEmail(event_id):
         to_users = []
         user_id = event.id
         if(user_id is not None):
-            user_email = User.query.filter_by(id=user_id)
-            to_users = [user_email]
+            user = User.query.filter_by(id=user_id).first()
+            to_users = [user.email]
         sendEmail(subject, to_users)
         return "Successfully sent email"
     return "Event retrieval failed"
