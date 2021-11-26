@@ -1,12 +1,20 @@
 {% extends "dashboard_admin.html" %}
+
 {% block admincontent %}
-<div class="container">
-        <label for="events_list">Select an event :</label>
-        <select name="events_list" id="events_list">
+<br>
+<center>
+<div class="container" >
+        <h2>Select an event :</h2>
+        <br>
+        <!-- <label for="events_list">Select an event :</label> -->
+        <select name="events_list" id="events_list" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
             {% for event in events %}
-                <option value="{{ event['id'] }}"> {{ event['test_name'] }} </option>
+            <option value="{{ event['id'] }}"> {{ event['test_name'] }} </option>
             {% endfor %}
-        </select> 
-        <button onClick="sendEmailXhttp()">Send email</button>
+        </select>
+        <br><br><br>
+        <button type="button" class="btn btn-primary btn-lg" onClick="sendEmailXhttp()">Send email</button>
+        <!-- <button onClick="sendEmailXhttp()">Send email</button> -->
 </div>
+</center>
 {% endblock admincontent %}

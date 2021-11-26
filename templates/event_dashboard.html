@@ -1,29 +1,42 @@
 {% extends "dashboard_admin.html" %}
 {% block admincontent %}
+<br>
 <div class="container">
-    <table>
+    <table class="table table-hover">
         <thead>
-            <tr>
-                <th>Test name</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Status</th>
-                <th>Mouse clicks</th>
-                <th>Heat map</th>
-                <th>URL</th>
+            <tr class="table-active">
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Test Name</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Start</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">End</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Status</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Mouse Clicks</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Heat Map</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">URL</th>
             </tr>
         </thead>
-        {% for event in events %}
-        <tr>
-            <td>{{ event['test_name'] }}</td>
-            <td>{{ event['start'] }}</td>
-            <td>{{ event['end'] }}</td>
-            <td>{{ event['status'] }}</td>
-            <td>{{ event['mouse_clicks'] }}</td>
-            <td>{{ event['heat_map'] }}</td>
-            <td><a href="{{ event['event_url'] }}">link</a></td>
-        </tr>
-        {% endfor %}
+        <tbody>
+            <tr class="table-success">
+                <th scope="row"> Dummy Success</th>
+                <td>Dummy content</td>
+                <td>Dummy content</td>
+                <td>Dummy content</td>
+                <td>Dummy content</td>
+                <td>Dummy content</td>
+                <td>Dummy content</td>
+            </tr>
+            {% for event in events %}
+            <tr class="table-success">
+                <td>{{ event['test_name'] }}</td>
+                <td>{{ event['start'] }}</td>
+                <td>{{ event['end'] }}</td>
+                <td>{{ event['status'] }}</td>
+                <td>{{ event['mouse_clicks'] }}</td>
+                <td>{{ event['heat_map'] }}</td>
+                <td><a href="{{ event['event_url'] }}">link</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
+
 </div>
 {% endblock %}
