@@ -9,6 +9,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from datetime import datetime
 import json
 import pymysql
+from util import send_gmail_utiltity
 
 pymysql.install_as_MySQLdb()
 
@@ -199,6 +200,33 @@ def view_events():
         }
         calendar_populate.append(new_event)
     return render_template('calender.html', events=calendar_populate)
+
+
+@app.route('/sendemail/<event_id>')
+def sendEventEmail(event_id):
+    event = Event.query.filter_by(id=event_id).first()
+    if(event is not None):
+        subject = "Invite sent for event " + event.test_name
+        to_users = []
+        user_id = event.id
+        if(user_id is not None):
+            user_email = User.query.filter_by(id=user_id)
+            to_users = [user_email]
+        sendEmail(subject, to_users)
+        return "Successfully sent email"
+    return "Event retrieval failed"
+
+
+@app.route('/eventInvite')
+def eventInvite():
+    events = Event.query.all()
+    return render_template('send_email.html', events=events)
+
+
+@app.route('/eventDashboard')
+def eventDashboard():
+    events = Event.query.filter_by(status='COMPLETED')
+    return render_template('event_dashboard.html', events=events)
 
 
 def database_init():
