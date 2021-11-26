@@ -23,14 +23,6 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 
-class Admin(UserMixin, db.Model):
-    __tablename__ = 'admin'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(15), unique=True)
-    password = db.Column(db.String(150), default='', nullable=False)
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
 
 
 class User(UserMixin, db.Model):
@@ -125,7 +117,7 @@ def signup():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('login'))
+        return redirect(url_for('index'))
         # return '<h1>New user has been created!</h1>'
         # return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 
@@ -153,7 +145,7 @@ def logout():
 
 @app.route('/observer/users/query', methods=['GET'])
 def users_fetch():
-    users = User.query.all()
+    users = User.query.filter_by(isadmin = False)
     userlist = []
     for user in users:
         userlist.append({'id': user.id, 'username': user.username})
@@ -218,9 +210,6 @@ def database_init():
     db.session.add(obj)
     db.session.commit()
 
-    obj = Admin(username="admin", password=hashed_password)
-    db.session.add(obj)
-    db.session.commit()
     # adding a static user account at the beginning of the program
     hashed_password = generate_password_hash(
         "test@123", method='sha256')
