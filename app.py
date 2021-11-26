@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, jsonify, request
+from flask import Flask, flash, render_template, redirect, url_for, jsonify, request
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
@@ -17,6 +17,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/eval'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/login'
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -94,10 +95,12 @@ def login():
                 else:
                     return redirect(url_for('dashboard'))
             else:
-                print("password mismatch!")
+                flash("Password Mismatch!")
+                return render_template('login.html', form=form)
         # return str(user.username) + " " + str(user.password) + " " + str(form.username.data) + " " + str(form.password.data)
-
-        return '<h1>Invalid username or password</h1>'
+        flash("User does not exist!!")
+        return render_template('login.html', form=form)
+        # return '<h1>Invalid username or password</h1>'
         # return '<h1>' + form.username.data + ' ' + form.password.data + '</h1>'
 
     return render_template('login.html', form=form)
@@ -229,6 +232,7 @@ def eventDashboard():
     return render_template('event_dashboard.html', events=events)
 
 
+# pip install --upgrade 'SQLAlchemy<1.4'
 def database_init():
     db.drop_all()
     db.create_all()

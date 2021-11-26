@@ -20,6 +20,11 @@
         {{ wtf.form_field(form.remember) }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     </form>
-
+    <center>
+        <!-- <h1>Flashing messages</h1> -->
+        {% for category, message in get_flashed_messages(with_categories=True) %}
+        <div class="alert alert-{{category}}" style="font-size: 1.3rem;">Error: {{ message }}</div>
+        {% endfor %}
+    </center>
 </div> <!-- /container -->
 {% endblock %}
