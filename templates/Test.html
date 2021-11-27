@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>complete responsive website desgin tutorial</title>
+
+    <!-- font awesome cdn link  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- custom css file link  -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300&display=swap');
+
+:root{
+    --main-color:#e8786e;
+    --black:#555;
+    --light-color:#777;
+    --bg:#fceae9;
+    --border:.1rem solid rgba(0,0,0,.1);
+    --box-shadow:0 .5rem 1.5rem rgba(0,0,0,.1);
+}
+
+*{
+    font-family: 'Nunito', sans-serif;
+    margin:0; padding:0;
+    box-sizing: border-box;
+    outline: none; border:none;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: all .3s ease-out;
+}
+
+html{
+    font-size: 62.5%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 9rem;
+    overflow-x: hidden;
+}
+
+section{
+    padding:2rem 9%;
+}
+
+.heading{
+    text-align: center;
+    padding-bottom: 3rem;
+    font-size: 4rem;
+    color:var(--black);
+}
+
+.heading span{
+    color:var(--main-color);
+    border-radius: .5rem;
+    background: var(--bg);
+    padding:0 1.5rem;
+}
+
+.btn{
+    margin-top: 1rem;
+    display: inline-block;
+    padding:.8rem 3rem;
+    font-size: 1.7rem;
+    cursor: pointer;
+    color:#fff;
+    background:var(--main-color);
+    border-radius: .5rem;
+    box-shadow: var(--box-shadow);
+    position: relative;
+    z-index: 0;
+    overflow:hidden;
+}
+
+.btn::before{
+    content: '';
+    position: absolute;
+    top:0; right:0;
+    height: 100%;
+    width:0%;
+    background:var(--black);
+    z-index: -1;
+    transition: .2s ease-out;
+}
+
+.btn:hover::before{
+    left:0;
+    width:100%;
+}
+
+.header{
+    position: fixed;
+    top:0; left:0; right: 0;
+    z-index: 1000;
+    background: #fff;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:2rem 9%;
+}
+
+.header .logo{
+    font-size: 2.5rem;
+    color:var(--black);
+    font-weight: bolder;
+}
+
+.header .navbar a{
+    font-size: 1.7rem;
+    color: var(--light-color);
+    margin-left: 2rem;
+}
+
+.header .navbar a:hover{
+    color:var(--main-color);
+}
+
+#menu-btn{
+    cursor: pointer;
+    font-size: 2.5rem;
+    padding:1rem 1.3rem;
+    border-radius: .5rem;
+    color: var(--main-color);
+    background: var(--bg);
+    display: none;
+}
+
+#menu-btn:hover{
+    color: #fff;
+    background: var(--main-color);
+}
+
+.home{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap:1.5rem;
+    padding-top: 10rem;
+    background:var(--bg);
+    position: relative;
+}
+
+.home .content{
+    flex:1 1 45rem;
+}
+
+.home .image{
+    flex:1 1 45rem;
+}
+
+.home .image img{
+    width: 100%;
+}
+
+.home .content h3{
+    font-size: 3.5rem;
+    color:var(--black);
+    line-height: 1.8;
+}
+
+.home .content p{
+    font-size: 1.7rem;
+    color:var(--light-color);
+    line-height: 1.8;
+    padding:1rem 0;
+}
+
+.home .cloud{
+    position: absolute;
+    bottom: 0; right: 0; left: 0;
+    height: 18rem;
+    background-size: 250rem 18rem;
+    background:url(../images/cloud.png) repeat-x;
+    animation: cloud 10s linear infinite;
+}
+
+@keyframes cloud{
+    0%{
+        background-position-x: 0rem;
+    }
+    100%{
+        background-position-x: -250rem;
+    }
+}
+
+.home .cloud-1{
+    opacity: .5;
+    height:20rem;
+    background-size: 250rem 20rem;
+    animation-direction: reverse;
+    animation-duration: 15s;
+}
+.icons-container .icons{
+    flex:1 1 15rem;
+    border-radius: .5rem;
+    border:var(--border);
+    padding:1.5rem;
+    text-align: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* media queries  */
+@media (max-width:991px){
+
+    html{
+        font-size: 55%;
+    }
+
+    .header{
+        padding:2rem;
+    }
+
+    section{
+        padding:2rem;
+    }
+
+}
+
+@media (max-width:768px){
+
+    #menu-btn{
+        display: initial;
+    }
+
+    .header {
+        position: absolute;
+        top:115%; right: 2rem;
+        background:#fff;
+        box-shadow: var(--box-shadow);
+        border:var(--border);
+        border-radius: .5rem;
+        width: 30rem;
+        transform: scale(0);
+        transform-origin: top right;
+        opacity: 0;
+    }
+
+    .header.active{        
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .header  a{
+        font-size: 2rem;
+        display: block;
+        padding:1rem;
+        margin: 1rem;
+        border-radius: .5rem;
+    }
+
+    .header  a:hover{
+        background: var(--bg);
+    }
+
+    .home {
+        text-align: center;
+    }
+
+}
+
+@media (max-width:450px){
+
+    html{
+        font-size: 50%;
+    }
+
+}
+</style>
+
+</head>
+<body>
+    
+
+
+<header class="header">
+
+    <a href="#" class="logo">My Test</a>
+
+    
+    <div id="menu-btn" class="fas fa-bars"></div>
+
+</header>
+
+
+<section class="home" id="home">
+
+    <div class="content">
+        <h3>Test Website</h3>
+        <p>Test is happening now...</p>
+        
+    </div>
+
+    <div class="image">
+        <img src="images/rocket.svg" alt="">
+    </div>
+
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+</section>
+
+<section>
+<div class="box-container">
+
+        <div class="box">
+            <img src="images/s-1.png" alt="">
+			
+            <h1>Note:</h1>
+            <h2>Don't navigate to other websites during the test </h2>
+			
+            <a href="#" class="btn">Finish Test</a>
+        </div>
+
+      
+
+    </div>
+
+
+</section>
+
+
+
+</body>
+</html>
