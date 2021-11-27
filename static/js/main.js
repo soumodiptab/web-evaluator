@@ -3,5 +3,5 @@ function sendEmailXhttp() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "/sendemail/" + event_id, true);
     xhttp.send();
-    alert("Email sent successfully");
+    toastr.success("Email has been sent");
 }

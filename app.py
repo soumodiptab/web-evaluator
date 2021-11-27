@@ -18,6 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretkey'
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:mYSQLSERVER@localhost:3306/testdb"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/login'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:8080/eval'
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -255,13 +256,10 @@ def view_events():
 def sendEventEmail(event_id):
     event = Event.query.filter_by(id=event_id).first()
     if(event is not None):
-        subject = "Invite sent for event " + event.test_name
-        to_users = []
-        user_id = event.id
+        user_id = event.user_id
         if(user_id is not None):
             user = User.query.filter_by(id=user_id).first()
-            to_users = [user.email]
-        sendEmail(subject, to_users)
+        sendEmail(str(event.test_name), str(user.email), str(event.start), str(event.end), str(event.url))
         return "Successfully sent email"
     return "Event retrieval failed"
 
