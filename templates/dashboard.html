@@ -31,6 +31,33 @@
 </nav>
 <br>
 <center>
-<h1>Your Test will happen here</h1>
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-active">
+                    <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Test Name</th>
+                    <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Start</th>
+                    <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">End</th>
+                    <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">BUTTON TO TEST</th>
+                </tr>
+            </thead>
+            <tbody>
+                <script type="text/javascript">
+                    function startTest(id){
+                        console.log(id);
+                        window.location.href=`http://127.0.0.1:8000/user/take_test/?id=${id}`;
+                    }
+                </script>
+                {% for event in event_data %}
+                <tr class="table-success">
+                    <td>{{ event['test_name'] }}</td>
+                    <td>{{ event['start'] }}</td>
+                    <td>{{ event['end'] }}</td>
+                    <td><input id="testRedirect" onclick="startTest({{ event['id']}})" type="button" value="start test"></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </center>
 {% endblock %}
