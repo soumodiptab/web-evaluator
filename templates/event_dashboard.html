@@ -9,9 +9,9 @@
                 <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Start</th>
                 <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">End</th>
                 <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Status</th>
+                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Name</th>
                 <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Mouse Clicks</th>
                 <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">Heat Map</th>
-                <th scope="col" style="font-size: 1.4rem; font-family: Verdana, Geneva, Tahoma, sans-serif;">URL</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +19,7 @@
                 function viewResult(id){
                     console.log(id);
                     window.location.href=`/admin/view_test/?id=${id}`;
+                   // window.open('/admin/view_test/?id=${id}','_blank').focus();
                 }
             </script>
             {% for event in events %}
@@ -27,9 +28,9 @@
                 <td>{{ event['start'] }}</td>
                 <td>{{ event['end'] }}</td>
                 <td>{{ event['status'] }}</td>
+                <td>{{ event['user']['firstname'] }} {{ event['user']['lastname'] }}</td>
                 <td>{{ event['mouse_clicks'] }}</td>
-                <td>{{ event['heat_map'] }}</td>
-                <td><input id="resultRedirect" onclick="viewResult({{ event['id']}})" type="button" value="view results"></td>
+                <td><input id="resultRedirect" class="btn btn-primary" onclick="viewResult({{ event['id']}})" type="button" value="view results"></td>
             </tr>
             {% endfor %}
         </tbody>

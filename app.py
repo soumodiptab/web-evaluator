@@ -16,7 +16,8 @@ pymysql.install_as_MySQLdb()
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretkey'
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:mYSQLSERVER@localhost:3306/testdb"
+app.config['SQLALCHEMY_DATABASE_URI'] ="mysql+mysqlconnector://root:password@localhost/eval"
+#app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:mYSQLSERVER@localhost:3306/testdb"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/login'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost:8080/eval'
 bootstrap = Bootstrap(app)
@@ -184,7 +185,7 @@ def add_coordinates():
 @app.route('/dashboard_admin')
 @login_required
 def dashboard_admin():
-    return render_template('dashboard_admin.html', name=current_user.username)
+    return render_template('home.html', name=current_user.username)
 
 
 @app.route('/logout')
@@ -266,14 +267,14 @@ def sendEventEmail(event_id):
 
 @app.route('/eventInvite')
 def eventInvite():
-    events = Event.query.all()
+    events = Event.query.filter_by(status='NOTCOMPLETED')
     return render_template('send_email.html', events=events)
 
 
 @app.route('/eventDashboard')
 def eventDashboard():
     events = Event.query.filter_by(status='COMPLETED')
-    return render_template('event_dashboard.html', events=events)
+    return render_template('event_dashboard.html', events=events,)
 
 
 # pip install --upgrade 'SQLAlchemy<1.4'
