@@ -15,15 +15,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="table-success">
-                <th scope="row"> Dummy Success</th>
-                <td>Dummy content</td>
-                <td>Dummy content</td>
-                <td>Dummy content</td>
-                <td>Dummy content</td>
-                <td>Dummy content</td>
-                <td>Dummy content</td>
-            </tr>
+            <script type="text/javascript">
+                function viewResult(id){
+                    console.log(id);
+                    window.location.href=`http://127.0.0.1:8000/admin/view_test/?id=${id}`;
+                }
+            </script>
             {% for event in events %}
             <tr class="table-success">
                 <td>{{ event['test_name'] }}</td>
@@ -32,7 +29,7 @@
                 <td>{{ event['status'] }}</td>
                 <td>{{ event['mouse_clicks'] }}</td>
                 <td>{{ event['heat_map'] }}</td>
-                <td><a href="{{ event['event_url'] }}">link</a></td>
+                <td><input id="resultRedirect" onclick="viewResult({{ event['id']}})" type="button" value="view results"></td>
             </tr>
             {% endfor %}
         </tbody>

@@ -16,7 +16,7 @@ pymysql.install_as_MySQLdb()
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretkey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:password@localhost/eval'
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:mYSQLSERVER@localhost:3306/testdb"
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:''@localhost/login'
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
@@ -50,6 +50,13 @@ class Event(db.Model):
     status = db.Column(db.String(20), nullable=False)
     mouse_clicks = db.Column(db.String(100))
     heat_map = db.Column(db.String(200))
+
+
+class Coordinates(UserMixin, db.Model):
+    coordinate_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('event.id'))
+    x = db.Column(db.Integer)
+    y = db.Column(db.Integer)
 
 
 @login_manager.user_loader
@@ -131,7 +138,46 @@ def signup():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html', name=current_user.username)
+    eligible_events= Event.query.filter_by(user_id=current_user.id,status='NOTCOMPLETED')
+    return render_template('dashboard.html', name=current_user.username,event_data=eligible_events)
+
+
+@app.route('/user/take_test/')
+@login_required
+def start_test():
+    print(request.args.get('id'))
+    return render_template('Test.html', id=request.args.get('id'),is_admin=False)
+
+@app.route('/admin/view_test/')
+@login_required
+def view_test():
+    print(request.args.get('id'))
+    data = Coordinates.query.filter_by(id=request.args.get('id'))
+    returnVal = []
+    for i in data:
+        returnVal.append(i.x)
+        returnVal.append(i.y)
+    print(returnVal)
+    return render_template('Test.html',is_admin=True,coordinates=returnVal)
+
+
+
+@app.route('/user/addcoordinates',methods=['POST'])
+@login_required
+def add_coordinates():
+    coordinates_posted_by_user = request.get_json()
+    for i in coordinates_posted_by_user['data']:
+        new_coordinates = Coordinates(id=coordinates_posted_by_user['id'],x=i['x'],y=i['y'])
+        db.session.add(new_coordinates)
+    
+    corresponding_event = Event.query.filter_by(id=coordinates_posted_by_user['id']).first()
+
+    corresponding_event.status = 'COMPLETED'
+    corresponding_event.mouse_clicks = len(coordinates_posted_by_user['data'])
+    
+    db.session.commit()
+    return 'success'
+
 
 
 @app.route('/dashboard_admin')
