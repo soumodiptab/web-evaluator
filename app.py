@@ -140,14 +140,10 @@ def signup():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    current_time=datetime.now()
-
-    eligible_events= Event.query.filter_by(user_id=current_user.id,status='NOTCOMPLETED')
-    filtered_events=[]
-    for event in eligible_events:
-        if current_time > event.start and current_time < event.end :
-            filtered_events.append(event)
-    return render_template('dashboard.html', name=current_user.username,event_data=filtered_events)
+    current_datetime = datetime.now()
+    # eligible_events= Event.query.filter_by(user_id=current_user.id, status='NOTCOMPLETED')
+    eligible_events= Event.query.filter(Event.start <= current_datetime, Event.end >= current_datetime, Event.user_id==current_user.id, Event.status=='NOTCOMPLETED')
+    return render_template('dashboard.html', name=current_user.username,event_data=eligible_events)
 
 
 @app.route('/user/take_test/')
