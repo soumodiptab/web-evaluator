@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='dashboard.css')}}">
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+    <div class="container-fluid">
+        <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard_admin">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eventDashboard">Test results</a>
+                </li>
+                <!--<li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Events
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Create Event</a></li>
+                        <li><a class="dropdown-item" href="#">View Calender</a></li>
+                        <li><a class="dropdown-item" href="#">Modify Event</a></li>
+                        <li><a class="dropdown-item" href="#">Remove Event</a></li>
+                    </ul>
+                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('view_events') }}">Schedule Tests</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/eventInvite">Send Mail</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% block admincontent %}
+{% endblock admincontent %}
+{% endblock %}

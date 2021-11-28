@@ -187,7 +187,7 @@ def add_coordinates():
 @app.route('/dashboard_admin')
 @login_required
 def dashboard_admin():
-    return render_template('home.html', name=current_user.username)
+    return render_template('dashboard_admin.html', name=current_user.username)
 
 
 @app.route('/logout')
