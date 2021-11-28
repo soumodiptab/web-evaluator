@@ -12,7 +12,7 @@
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container-fluid">
         <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-        <a class="navbar-brand" href="#">User Dashboard</a>
+        <a class="navbar-brand" href="#">{{ name }}'s Dashboard</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -32,6 +32,8 @@
 <br>
 <center>
     <div class="container">
+        <h2>Available Tests</h2>
+        <br>
         <table class="table table-hover">
             <thead>
                 <tr class="table-active">
@@ -53,7 +55,7 @@
                     <td>{{ event['test_name'] }}</td>
                     <td>{{ event['start'] }}</td>
                     <td>{{ event['end'] }}</td>
-                    <td><input id="testRedirect" onclick="startTest({{ event['id']}})" type="button" value="start test"></td>
+                    <td><input class="btn btn-primary" id="testRedirect" onclick="startTest({{ event['id']}})" type="button" value="start test"></td>
                 </tr>
                 {% endfor %}
             </tbody>
