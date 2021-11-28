@@ -4,19 +4,11 @@ This Repository contains the Web Evaluation Suite used to retrieve analytics fro
 <hr>
 
 ## PROJECT OVERVIEW :
+The main goal of our tool is to evaluate the usability of a test website by generating heatmaps. 
+Heatmap is essentially placed on top of an existing website so that developers/admins can view which areas are frequently accessed in a website so that they can use this information to improve their website.
 
-## REQUIREMENTS :
-
-## SYSTEM DIAGRAM :
-
-
-## Modify as per convinience ->
 ### E-R MODEL/CLASSES (SQLALCHEMY ORM) :
 TABLES:
-* Admin
-    1. id - PK 
-    2. username - String(unique)
-    3. password - String
 * Users
     1. id - PK
     2. username - String(unique)
