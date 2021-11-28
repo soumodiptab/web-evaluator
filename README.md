@@ -23,14 +23,11 @@ TABLES:
     3. start - time
     4. end - time
     5. status - COMPLETED - true NOTCOMPLETED - false
-    6. token - default null (generate through email)[Not sure about this]
-* URL :
-    1. id - PK
-    2. url
-* Eval :
-    1. id - auto generated
-    2. eventid - FK
-    3. url id:
+    6. url
+* coordinates :
+    1. id - event id
+    2. x - xth pos
+    3. y - yth pos
 ### Main Structure (Pages):
 * Main user creation/Admin login page: `GET`
     * User create :`POST`   -> redirect to main page
